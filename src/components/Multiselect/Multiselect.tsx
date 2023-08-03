@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { ChangeEvent, useEffect, useState } from "react";
 
 const Multiselect = () => {
   const [show, setShow] = useState(false);
@@ -23,7 +23,7 @@ const Multiselect = () => {
     setOptions((prev) => [{ value: reAdd, label: reAdd }, ...prev]);
   };
 
-  const handleAllRemove = ():void => {
+  const handleAllRemove = (): void => {
     setSelectedOptions([]);
     setOptions([
       { value: "Red", label: "Red" },
@@ -33,6 +33,33 @@ const Multiselect = () => {
       { value: "Purple", label: "Purple" },
     ]);
   };
+
+  const [userText, setUserText] = useState<string>('')
+  const handleInput = (e: ChangeEvent<HTMLInputElement>): void => {
+    const inputText = e.target.value;
+    setUserText(inputText)
+    if (inputText) {
+      setShow(true)
+      const filteredOptions = options.filter(
+        (option) => option.label.toLowerCase().includes(inputText.toLowerCase())
+      );
+      setOptions(filteredOptions);
+    } else {
+      setShow(false)
+      setOptions(options)
+    }
+  }
+
+  useEffect(() => {
+    setOptions([
+      { value: "Red", label: "Red" },
+      { value: "Black", label: "Black" },
+      { value: "Yellow", label: "Yellow" },
+      { value: "Green", label: "Green" },
+      { value: "Purple", label: "Purple" },
+    ])
+    setShow(true)
+  }, [userText == ''])
 
   return (
     <div className="w-96">
@@ -48,6 +75,7 @@ const Multiselect = () => {
         ))}
         <div className="flex-1 flex justify-between items-center">
           <input
+            onChange={(e) => handleInput(e)}
             className="w-full border-none focus:outline-none h-full px-3 py-2"
             type="text"
             name=""
